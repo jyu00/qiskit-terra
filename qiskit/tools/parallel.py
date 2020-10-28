@@ -48,6 +48,7 @@ Routines for running Python functions in parallel using process pools
 from the multiprocessing library.
 """
 
+import time
 import os
 import platform
 from concurrent.futures import ProcessPoolExecutor
@@ -123,6 +124,9 @@ def parallel_map(  # pylint: disable=dangerous-default-value
                 print("parallel_map submitting tasks", flush=True)
                 future = executor.map(_task_wrapper, param)
                 print("parallel_map submitted tasks", flush=True)
+                while executor._pending_work_items:
+                    print(executor._pending_work_items)
+                    time.sleep(1)
 
             print("ProcessPoolExecutor done", flush=True)
             results = list(future)

@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """Assemble function for converting a list of circuits into a qobj."""
+import threading
 from collections import defaultdict
 from typing import Dict, List, Optional, Tuple
 
@@ -48,6 +49,7 @@ def _assemble_circuit(
         raise QiskitError("Unable to assemble circuit with unit '{}', which must be 'dt'."
                           .format(circuit.unit))
 
+    print(f"_assemble_circuit thread {threading.get_ident()} starting")
     # header data
     num_qubits = 0
     memory_slots = 0
@@ -140,6 +142,7 @@ def _assemble_circuit(
             del instruction._condition
 
         instructions.append(instruction)
+    print(f"_assemble_circuit thread {threading.get_ident()} ending")
     return (QasmQobjExperiment(instructions=instructions, header=header, config=config),
             pulse_library)
 
