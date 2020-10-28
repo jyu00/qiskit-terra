@@ -123,10 +123,11 @@ def parallel_map(  # pylint: disable=dangerous-default-value
                 param = map(lambda value: (task, value, task_args, task_kwargs), values)
                 print("parallel_map submitting tasks", flush=True)
                 future = executor.map(_task_wrapper, param)
-                print(f"parallel_map submitted tasks, future is {list(future)}", flush=True)
+                results = list(future)
+                print(f"parallel_map submitted tasks, results is {results}", flush=True)
 
             print("ProcessPoolExecutor done", flush=True)
-            results = list(future)
+            # results = list(future)
             Publisher().publish("terra.parallel.done", len(results))
 
         except (KeyboardInterrupt, Exception) as error:
