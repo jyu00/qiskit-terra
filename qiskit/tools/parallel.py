@@ -123,10 +123,7 @@ def parallel_map(  # pylint: disable=dangerous-default-value
                 param = map(lambda value: (task, value, task_args, task_kwargs), values)
                 print("parallel_map submitting tasks", flush=True)
                 future = executor.map(_task_wrapper, param)
-                print("parallel_map submitted tasks", flush=True)
-                while executor._pending_work_items:
-                    print(executor._pending_work_items)
-                    time.sleep(1)
+                print(f"parallel_map submitted tasks, future is {list(future)}", flush=True)
 
             print("ProcessPoolExecutor done", flush=True)
             results = list(future)
