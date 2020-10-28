@@ -266,7 +266,9 @@ def assemble_circuits(
     qobj_config.memory_slots = max(memory_slot_sizes)
     qobj_config.n_qubits = max(qubit_sizes)
 
+    print(f"Starting parallel map", flush=True)
     experiments_and_pulse_libs = parallel_map(_assemble_circuit, circuits, [run_config])
+    print(f"Done with parallel map", flush=True)
     experiments = []
     pulse_library = {}
     for exp, lib in experiments_and_pulse_libs:
