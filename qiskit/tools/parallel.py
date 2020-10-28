@@ -119,19 +119,14 @@ def parallel_map(  # pylint: disable=dangerous-default-value
         os.environ['QISKIT_IN_PARALLEL'] = 'TRUE'
         try:
             results = []
-            with ProcessPoolExecutor(max_workers=num_processes) as executor:
-                param = map(lambda value: (task, value, task_args, task_kwargs), values)
-                print("parallel_map submitting tasks", flush=True)
-                future = executor.map(_task_wrapper, param)
-                results = list(future)
-                try:
-                    for _, v in executor._pending_work_items.items():
-                        print(v)
-                except:
-                    pass
-                print(f"parallel_map submitted tasks, results is {results}", flush=True)
-
-            print("ProcessPoolExecutor done", flush=True)
+            executor = ProcessPoolExecutor(max_workers=num_processes)
+            param = map(lambda value: (task, value, task_args, task_kwargs), values)
+            print("parallel_map submitting tasks", flush=True)
+            future = executor.map(_task_wrapper, param)
+            results = list(future)
+            print("Shutting down executor", flush=True)
+            executor.shutdown()
+            print("executor shut down")
             # results = list(future)
             Publisher().publish("terra.parallel.done", len(results))
 
