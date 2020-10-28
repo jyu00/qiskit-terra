@@ -120,8 +120,11 @@ def parallel_map(  # pylint: disable=dangerous-default-value
             results = []
             with ProcessPoolExecutor(max_workers=num_processes) as executor:
                 param = map(lambda value: (task, value, task_args, task_kwargs), values)
+                print("parallel_map submitting tasks", flush=True)
                 future = executor.map(_task_wrapper, param)
+                print("parallel_map submitted tasks", flush=True)
 
+            print("ProcessPoolExecutor done", flush=True)
             results = list(future)
             Publisher().publish("terra.parallel.done", len(results))
 
