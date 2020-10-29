@@ -48,7 +48,6 @@ Routines for running Python functions in parallel using process pools
 from the multiprocessing library.
 """
 
-import time
 import os
 import platform
 from concurrent.futures import ProcessPoolExecutor
@@ -119,15 +118,13 @@ def parallel_map(  # pylint: disable=dangerous-default-value
         os.environ['QISKIT_IN_PARALLEL'] = 'TRUE'
         try:
             results = []
-            executor = ProcessPoolExecutor(max_workers=num_processes)
-            param = map(lambda value: (task, value, task_args, task_kwargs), values)
-            print("parallel_map submitting tasks", flush=True)
-            future = executor.map(_task_wrapper, param)
+            with ProcessPoolExecutor(max_workers=num_processes) as executor:
+                param = map(lambda value: (task, value, task_args, task_kwargs), values)
+                future = executor.map(_task_wrapper, param)
+                print("Shutting down executor", flush=True)
+
+            print("Executor shutted down", flush=True)
             results = list(future)
-            print("Shutting down executor", flush=True)
-            executor.shutdown()
-            print("executor shut down")
-            # results = list(future)
             Publisher().publish("terra.parallel.done", len(results))
 
         except (KeyboardInterrupt, Exception) as error:
