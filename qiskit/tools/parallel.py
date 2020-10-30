@@ -127,6 +127,9 @@ def parallel_map(  # pylint: disable=dangerous-default-value
             print("collecting results", flush=True)
             results = [s.result() for s in submitted]
             print("results collected", flush=True)
+            for s in submitted:
+                if s.running():
+                    print(f"future {s} is still running???")
             executor.shutdown()
             print("Executor shutted down", flush=True)
             # results = list(future)
